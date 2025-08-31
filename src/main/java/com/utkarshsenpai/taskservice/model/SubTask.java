@@ -1,44 +1,41 @@
 package com.utkarshsenpai.taskservice.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "tasks")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Task {
-
+@Table(name = "subtasks")
+public class SubTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String description;
-    private Instant deadline;
+    private Instant startTime;
+    private Instant endTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
+
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<SubTask> subTasks= new ArrayList<>();
-
-    public Task() {
+    public SubTask() {
     }
 
-    public Task(String title, String description, Instant deadline, Instant createdAt, Instant updatedAt, List<SubTask> subTasks) {
+    public SubTask(Long id, String title, String description, Instant startTime, Instant endTime, Task task, Instant createdAt, Instant updatedAt) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.deadline = deadline;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.task = task;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.subTasks= subTasks;
     }
 
     public Long getId() {
@@ -65,12 +62,28 @@ public class Task {
         this.description = description;
     }
 
-    public Instant getDeadline() {
-        return deadline;
+    public Instant getStartTime() {
+        return startTime;
     }
 
-    public void setDeadline(Instant deadline) {
-        this.deadline = deadline;
+    public void setStartTime(Instant startTime) {
+        this.startTime = startTime;
+    }
+
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public Instant getCreatedAt() {
@@ -88,13 +101,4 @@ public class Task {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    public List<SubTask> getSubTasks() {
-        return subTasks;
-    }
-
-    public void setSubTasks(List<SubTask> subTasks) {
-        this.subTasks = subTasks;
-    }
 }
-

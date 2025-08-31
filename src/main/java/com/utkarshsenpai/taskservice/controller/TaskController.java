@@ -31,6 +31,7 @@ public class TaskController {
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setCreatedAt(Instant.now());
+        task.setUpdatedAt(Instant.now());
         task.setDeadline(taskDto.getDeadline());
         return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
     }
